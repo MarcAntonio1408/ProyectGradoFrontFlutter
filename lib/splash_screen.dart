@@ -1,8 +1,10 @@
+import 'package:deteccion_persona_f/core/common/constants/app_constants.dart';
+import 'package:deteccion_persona_f/features/auth/presentation/pages/auth_page.dart';
+import 'package:deteccion_persona_f/features/auth/presentation/pages/onBoarding_screen.dart';
+import 'package:deteccion_persona_f/main_screen.dart';
+import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_nestjs/core/common/constants/app_constants.dart';
-import 'package:flutter_nestjs/features/auth/presentation/pages/auth_page.dart';
-import 'package:flutter_nestjs/features/auth/presentation/pages/onBoarding_screen.dart';
-import 'package:flutter_nestjs/main_screen.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 /// `SplashScreen` es un StatefulWidget que muestra una pantalla de bienvenida animada
@@ -62,7 +64,6 @@ class _SplashScreenState extends State<SplashScreen>
     // Inicia las animaciones.
     _controller.forward();
 
-
     // Navega a la siguiente pantalla después de un retraso de 2 segundos.
     Future.delayed(const Duration(milliseconds: 2000), () {
       // Comprueba si el widget todavía está montado en el árbol de widgets.
@@ -110,104 +111,108 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: Colors.white,
       body: Center(
         // `AnimatedBuilder` reconstruye el widget cuando los valores de la animación cambian.
-        child: AnimatedBuilder(animation: _controller, builder: (context, _){
-          // Combina múltiples transiciones para un efecto de entrada complejo.
-          return FadeTransition(
-            opacity: _fadeInAnimation,
-            child: SlideTransition(position: _slideUpAnimation,
-              child: ScaleTransition(scale: _scaleUpAnimation,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Logo minimalista de la aplicación.
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            AppConstants.primaryColor.withOpacity(0.1),
-                            AppConstants.primaryColor.withOpacity(0.2),
-                          ],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.06),
-                            blurRadius: 24,
-                            offset: const Offset(0, 8),
-                          )
-                        ]
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 84,
-                          height: 84,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.04),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            // Combina múltiples transiciones para un efecto de entrada complejo.
+            return FadeTransition(
+              opacity: _fadeInAnimation,
+              child: SlideTransition(
+                position: _slideUpAnimation,
+                child: ScaleTransition(
+                  scale: _scaleUpAnimation,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Logo minimalista de la aplicación.
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppConstants.primaryColor.withOpacity(0.1),
+                              AppConstants.primaryColor.withOpacity(0.2),
                             ],
                           ),
-                          child: Icon(
-                            Icons.shopping_bag_outlined,
-                            color: AppConstants.primaryColor,
-                            size: 40,
-
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.06),
+                              blurRadius: 24,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Container(
+                            width: 84,
+                            height: 84,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              FluentSystemIcons.ic_fluent_shield_filled,
+                              color: AppConstants.primaryColor,
+                              size: 40,
+                            ),
                           ),
-                        )
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-
-                    // Título de la marca.
-                    Text(
-                      'ShopEase',
-                      style: GoogleFonts.outfit(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.2,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Eslogan o lema de la aplicación.
-                    Text(
-                      'Shop smater, not harder',
-                      style: GoogleFonts.outfit(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.2,
-                        color: Colors.black54,
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-
-                    // Indicador de progreso circular.
-                    SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          AppConstants.primaryColor,
                         ),
                       ),
-                    )
-                  ],
-                )
-              )
-            )
-          );
-        })
+                      const SizedBox(height: 28),
+
+                      // Título de la marca.
+                      Text(
+                        'VigiIA',
+                        style: GoogleFonts.outfit(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.2,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Eslogan o lema de la aplicación.
+                      Text(
+                        'Detección en tiempo real, protección sin descanso.',
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.2,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(height: 28),
+
+                      // Indicador de progreso circular.
+                      SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppConstants.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

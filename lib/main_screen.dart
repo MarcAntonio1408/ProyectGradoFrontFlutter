@@ -1,13 +1,12 @@
 import 'package:deteccion_persona_f/core/common/constants/app_constants.dart';
+import 'package:deteccion_persona_f/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:deteccion_persona_f/features/detecciones/presentation/pages/detecciones_pages.dart';
+import 'package:deteccion_persona_f/features/dispositivos/presentation/pages/dispositivo_page.dart';
+import 'package:deteccion_persona_f/features/personas/presentation/pages/personas_pages.dart';
+import 'package:deteccion_persona_f/features/profile/presentation/pages/perfil_pages.dart';
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_nestjs/core/common/constants/app_constants.dart';
-import 'package:flutter_nestjs/features/blog/presentation/pages/blog_page.dart';
-import 'package:flutter_nestjs/features/cart/presentation/pages/cart_page.dart';
-import 'package:flutter_nestjs/features/home/presentation/pages/home_pages.dart';
-import 'package:flutter_nestjs/features/profile/presentation/pages/profile_page.dart';
-import 'package:flutter_nestjs/features/wishlist/presentation/pages/wishlist_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainScreen extends StatefulWidget {
@@ -25,13 +24,13 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _screens.addAll([
-      HomePage(
-        onNavigationToTab: _onItemTapped,
+      DashboardPage(
+        // onNavigationToTab: _onItemTapped,
       ),
-      CartPage(),
-      WishlistPage(),
-      BlogPage(),
-      ProfilePage(),
+      PersonasPages(),
+      DeteccionesPages(),
+      DispositivoPage(),
+      PerfilPages(),
     ]);
   }
 
@@ -67,33 +66,33 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 _buildnavItem(
                   0,
-                  FluentSystemIcons.ic_fluent_home_regular,
-                  FluentSystemIcons.ic_fluent_home_filled,
-                  'Home',
+                  FluentSystemIcons.ic_fluent_data_histogram_regular,
+                  FluentSystemIcons.ic_fluent_data_histogram_filled,
+                  'Dashboard',
                 ),
                 _buildnavItem(
                   1,
-                  Icons.shopping_cart_outlined,
-                  Icons.shopping_cart_rounded,
-                  'Cart',
+                  FluentSystemIcons.ic_fluent_people_search_regular,
+                  FluentSystemIcons.ic_fluent_people_search_filled,
+                  'Personas',
                 ),
                 _buildnavItem(
                   2,
-                  FluentSystemIcons.ic_fluent_heart_regular,
-                  FluentSystemIcons.ic_fluent_heart_filled,
-                  'Wishlist',
+                  FluentSystemIcons.ic_fluent_person_block_filled,
+                  FluentSystemIcons.ic_fluent_person_block_filled,
+                  'Detecciones',
                 ),
                 _buildnavItem(
                   3,
-                  FluentSystemIcons.ic_fluent_document_briefcase_regular,
-                  FluentSystemIcons.ic_fluent_document_briefcase_filled,
-                  'Blog',
+                  FluentSystemIcons.ic_fluent_phone_laptop_regular,
+                  FluentSystemIcons.ic_fluent_phone_laptop_filled,
+                  'Dispositivos',
                 ),
                 _buildnavItem(
                   4,
                   FluentSystemIcons.ic_fluent_person_regular,
                   FluentSystemIcons.ic_fluent_person_filled,
-                  'Profile',
+                  'Perfil',
                 ),
               ],
             ),
