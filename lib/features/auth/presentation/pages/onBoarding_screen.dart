@@ -21,20 +21,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // Lista de datos para cada página de la introducción.
   final List<OnboardingPage> _pages = [
     OnboardingPage(
-      image: 'assets/images/onboarding_img1.png',
-      title: 'Discover Unique Products',
-      description: 'Find the perfect pieces to make your home truly yours.',
+      image: 'assets/images/RegistroPersona_1raPantalla.png',
+      title: 'Búsqueda Colaborativa',
+      description: 'Registra de forma segura a persoans desaparecidas.',
     ),
     OnboardingPage(
-      image: 'assets/images/onboarding_img3.png',
-      title: 'Quality & Comfort',
+      image: 'assets/images/Buscando_persona_2daPantalla.png',
+      title: 'Identificación Inteligente',
       description:
-          'Experience comfort with our high-quality furniture selection',
+          'Utiliza tecnologia de IA avanzada para anlizar no solo rostro, sino vestimenta.',
     ),
     OnboardingPage(
-      image: 'assets/images/onboarding_img2.png',
-      title: 'Fast Delivery',
-      description: 'Get your product delivered right to your doorstep',
+      image: 'assets/images/PersonaLocalizada_3raPantalla.png',
+      title: 'Alertas en Tiempo Real',
+      description: 'Recibe notificaciones instantáneas en tu móvil.',
     ),
   ];
 
