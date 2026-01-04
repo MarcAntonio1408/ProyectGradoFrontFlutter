@@ -165,8 +165,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     // El texto del botón cambia en la última página.
                     child: Text(
                       _currentPage == _pages.length - 1
-                          ? 'Get Started'
-                          : 'Next',
+                          ? 'Empezar'
+                          : 'Siguiente',
                       style: GoogleFonts.outfit(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

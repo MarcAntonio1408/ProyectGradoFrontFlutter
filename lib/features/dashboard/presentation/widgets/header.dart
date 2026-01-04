@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:deteccion_persona_f/features/profile/presentation/pages/perfil_pages.dart';
 
 class Header extends StatelessWidget {
   final VoidCallback onCartTap;
@@ -12,7 +13,10 @@ class Header extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            // Navigate to account info page
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PerfilPages()),
+            );
           },
           child: CircleAvatar(
             radius: 20,

@@ -1,4 +1,5 @@
 import 'package:deteccion_persona_f/core/common/constants/app_constants.dart';
+import 'package:deteccion_persona_f/features/auth/data/auth_service.dart';
 import 'package:deteccion_persona_f/features/auth/presentation/pages/forgot_password_screen.dart';
 import 'package:deteccion_persona_f/features/auth/presentation/widgets/auth_widgets.dart';
 import 'package:deteccion_persona_f/main_screen.dart';
@@ -35,6 +36,11 @@ class _AuthPageState extends State<AuthPage>
   final _signUpEmailController = TextEditingController();
   final _signUpPasswordController = TextEditingController();
   final _signUpConfirmPasswordController = TextEditingController();
+  final _signUpFullNameController = TextEditingController();
+
+  // Estado de carga y servicio
+  bool _isLoading = false;
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {
@@ -53,30 +59,81 @@ class _AuthPageState extends State<AuthPage>
     _signUpEmailController.dispose();
     _signUpPasswordController.dispose();
     _signUpConfirmPasswordController.dispose();
+    _signUpFullNameController.dispose();
     super.dispose();
   }
 
-  /// Navega a la pantalla principal y elimina todas las rutas anteriores.
-  /// Usado para la funcionalidad "Continuar como invitado".
-  void _continueAsGuest() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const MainScreen()),
-      (route) => false,
-    );
-  }
-
   /// Valida y procesa el formulario de inicio de sesión.
-  void _onSignInPressed() {
+  Future<void> _onSignInPressed() async {
     if (_signInFormKey.currentState?.validate() ?? false) {
-      // TODO: Add sign in logic
+      setState(() {
+        _isLoading = true;
+      });
+
+      bool loginSuccess = false;
+      try {
+        await _authService.login(
+          _signInEmailController.text.trim(),
+          _signInPasswordController.text.trim(),
+        );
+        loginSuccess = true;
+
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+          );
+        }
+      } finally {
+        if (mounted && !loginSuccess) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
     }
   }
 
   /// Valida y procesa el formulario de registro.
-  void _onSignUpPressed() {
+  Future<void> _onSignUpPressed() async {
     if (_signUpFormKey.currentState?.validate() ?? false) {
-      // TODO: Add sign up logic
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        await _authService.register(
+          _signUpNameController.text.trim(),
+          _signUpEmailController.text.trim(),
+          _signUpPasswordController.text.trim(),
+          _signUpFullNameController.text.trim(),
+        );
+
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
     }
   }
 
@@ -93,9 +150,21 @@ class _AuthPageState extends State<AuthPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.defaultBorderRadius,
+                      ),
+                      child: Image.asset(
+                        'assets/images/login_createuser.png',
+                        height: 180,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   // Título de bienvenida.
                   Text(
-                    'Welcome',
+                    'Bienvenidos',
                     style: GoogleFonts.outfit(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -233,13 +302,13 @@ class _AuthPageState extends State<AuthPage>
                 AuthButton(
                   text: 'Sign In',
                   onPressed: _onSignInPressed,
-                  isLoading: false,
+                  isLoading: _isLoading,
                 ),
-                const SizedBox(height: 16),
-                ReusabledOutlinedButton(
-                  text: 'Continue as Guest',
-                  onPressed: _continueAsGuest,
-                ),
+                // const SizedBox(height: 16),
+                // ReusabledOutlinedButton(
+                //   text: 'Continue as Guest',
+                //   onPressed: _continueAsGuest,
+                // ),
               ],
             ),
           ),
@@ -289,12 +358,12 @@ class _AuthPageState extends State<AuthPage>
             child: Column(
               children: [
                 AuthTextField(
-                  label: 'Name',
-                  hint: 'Enter your name',
+                  label: 'Nombre de Usuario',
+                  hint: 'Ingrese su Nombre de Usuario',
                   controller: _signUpNameController,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
+                      return 'Por favor ingrese su nombre de Usuario';
                     }
                     return null;
                   },
@@ -302,15 +371,15 @@ class _AuthPageState extends State<AuthPage>
                 const SizedBox(height: 20),
                 AuthTextField(
                   label: 'Email',
-                  hint: 'Enter your email',
+                  hint: 'Ingrese su email',
                   controller: _signUpEmailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'Por favor ingrese su email';
                     }
                     if (!value.contains('@')) {
-                      return 'Please enter a valid email';
+                      return 'Por favor ingrese un email válido';
                     }
                     return null;
                   },
@@ -318,31 +387,43 @@ class _AuthPageState extends State<AuthPage>
                 const SizedBox(height: 20),
                 AuthTextField(
                   label: 'Password',
-                  hint: 'Create a password',
+                  hint: 'Cree una contraseña',
                   controller: _signUpPasswordController,
                   isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
+                      return 'Por favor ingrese una contraseña';
                     }
                     if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
+                      return 'La contraseña debe tener al menos una mayuscula, minuscula, un numero, y 6 caracteres';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 20),
                 AuthTextField(
-                  label: 'Confirm Password',
-                  hint: 'Confirm your password',
+                  label: 'Confirme su contraseña',
+                  hint: 'Confirme su contraseña',
                   controller: _signUpConfirmPasswordController,
                   isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
+                      return 'Por favor confirme su contraseña';
                     }
                     if (value != _signUpPasswordController.text) {
-                      return 'Passwords do not match';
+                      return 'Las contraseñas no coinciden';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                AuthTextField(
+                  label: 'Nombre Completo',
+                  hint: 'Ingrese su Nombre Completo',
+                  controller: _signUpFullNameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingrese su nombre completo';
                     }
                     return null;
                   },
@@ -352,22 +433,22 @@ class _AuthPageState extends State<AuthPage>
           ),
           const SizedBox(height: 32),
           AuthButton(
-            text: 'Create Account',
+            text: 'Cree una Cuenta',
             onPressed: _onSignUpPressed,
-            isLoading: false,
+            isLoading: _isLoading,
           ),
           const SizedBox(height: 16),
-          ReusabledOutlinedButton(
-            text: 'Continue as Guest',
-            onPressed: _continueAsGuest,
-          ),
+          // ReusabledOutlinedButton(
+          //   text: 'Continue as Guest',
+          //   onPressed: _continueAsGuest,
+          // ),
           const SizedBox(height: 24),
           // Sección para cambiar a la pestaña de inicio de sesión.
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Already have an account?',
+                'Ya tienes una cuenta?',
                 style: GoogleFonts.outfit(
                   color: Colors.grey[600],
                   fontWeight: FontWeight.w600,

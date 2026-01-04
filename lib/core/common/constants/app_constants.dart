@@ -4,6 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 /// Una clase que contiene constantes de diseño reutilizables en toda la aplicación.
 /// Esto ayuda a mantener una interfaz de usuario consistente y facilita los cambios de estilo globales.
 class AppConstants {
+  // --- API ---
+  // Usa 'http://10.0.2.2:3000/api' para emulador Android
+  // Usa 'http://localhost:3000/api' para iOS o Web
+  static const String apiBaseUrl = 'http://10.0.2.2:3000/api';
+
   // --- COLORES ---
   /// Color principal usado para elementos importantes como botones y acentos.
   static Color primaryColor = Color(0xFF085B63);
