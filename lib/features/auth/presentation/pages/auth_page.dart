@@ -137,6 +137,13 @@ class _AuthPageState extends State<AuthPage>
     }
   }
 
+  void _continueAsGuest() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MainScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -304,11 +311,11 @@ class _AuthPageState extends State<AuthPage>
                   onPressed: _onSignInPressed,
                   isLoading: _isLoading,
                 ),
-                // const SizedBox(height: 16),
-                // ReusabledOutlinedButton(
-                //   text: 'Continue as Guest',
-                //   onPressed: _continueAsGuest,
-                // ),
+                const SizedBox(height: 16),
+                ReusabledOutlinedButton(
+                  text: 'Continue as Guest',
+                  onPressed: _continueAsGuest,
+                ),
               ],
             ),
           ),

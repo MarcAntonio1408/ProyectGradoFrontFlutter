@@ -5,12 +5,9 @@ import 'package:deteccion_persona_f/features/auth/data/auth_logins.dart';
 
 class AuthService {
   Future<DatosUsuarios> login(String email, String password) async {
-    print('DEBUG: AuthService.login iniciado para: $email');
     final uri = Uri.parse('${AppConstants.apiBaseUrl}/auth/login');
-    print('DEBUG: Intentando conectar a: $uri');
 
     try {
-      print('DEBUG: Enviando petición HTTP POST...');
       final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
@@ -19,8 +16,6 @@ class AuthService {
           'password': password,
         }),
       );
-      print('DEBUG: Respuesta recibida. Código: ${response.statusCode}');
-      print('DEBUG: Cuerpo respuesta: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -28,18 +23,14 @@ class AuthService {
         // Ajuste: Dependiendo de si el backend devuelve { user: {...}, token: "..." }
         // o directamente el objeto usuario.
         if (data.containsKey('user')) {
-          print('DEBUG: Procesando usuario desde data["user"]');
           return DatosUsuarios.fromJson(data['user']);
         }
-        print('DEBUG: Procesando usuario desde raíz del JSON');
         return DatosUsuarios.fromJson(data);
       } else {
-        print('DEBUG: El servidor devolvió un error');
         final errorData = jsonDecode(response.body);
         throw Exception(errorData['message'] ?? 'Error en las credenciales');
       }
     } catch (e) {
-      print('DEBUG: Excepción en AuthService: $e');
       throw Exception('Error de conexión: $e');
     }
   }

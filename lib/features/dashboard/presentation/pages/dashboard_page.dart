@@ -230,8 +230,8 @@ class DashboardPage extends StatelessWidget {
                             SizedBox(
                               height: 150,
                               width: 150,
-                              child: const Center(child: Text("Pie Chart")),
-                              /* child: PieChart(
+                              // child: const Center(child: Text("Pie Chart")),
+                              child: PieChart(
                                 PieChartData(
                                   sectionsSpace: 0,
                                   centerSpaceRadius: 30,
@@ -270,7 +270,7 @@ class DashboardPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              ), */
+                              ), 
                             ),
                             const SizedBox(width: 24),
                             Expanded(
@@ -365,8 +365,8 @@ class DashboardPage extends StatelessWidget {
                         SizedBox(
                           height: 200,
                           width: double.infinity,
-                          child: const Center(child: Text("Bar Chart")),
-                          /* child: BarChart(
+                          // child: const Center(child: Text("Bar Chart")),
+                          child: BarChart(
                             BarChartData(
                               alignment: BarChartAlignment.spaceBetween,
                               maxY: 100,
@@ -641,7 +641,7 @@ class DashboardPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ), */
+                          ),
                         ),
                         
                       ],
