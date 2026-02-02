@@ -1,7 +1,14 @@
+import 'package:deteccion_persona_f/features/auth/data/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:deteccion_persona_f/splash_screen.dart';
 
-void main() {
+void main() async {
+  // Asegura que los bindings de Flutter estén inicializados antes de cualquier operación asíncrona.
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Realiza la comprobación de conexión con el backend y muestra los logs.
+  await AuthService().checkBackendConnection();
+
   runApp(const DeteccionPersona());
 }
 

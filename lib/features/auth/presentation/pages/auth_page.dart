@@ -72,13 +72,15 @@ class _AuthPageState extends State<AuthPage>
 
       bool loginSuccess = false;
       try {
-        await _authService.login(
+        final user = await _authService.login(
           _signInEmailController.text.trim(),
           _signInPasswordController.text.trim(),
         );
         loginSuccess = true;
 
         if (mounted) {
+          // Navega a la pantalla principal. MainScreen leerá el rol del usuario
+          // desde AppConstants.currentUser para mostrar la vista correcta.
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -108,7 +110,7 @@ class _AuthPageState extends State<AuthPage>
       });
 
       try {
-        await _authService.register(
+        final newUser = await _authService.register(
           _signUpNameController.text.trim(),
           _signUpEmailController.text.trim(),
           _signUpPasswordController.text.trim(),
@@ -116,6 +118,8 @@ class _AuthPageState extends State<AuthPage>
         );
 
         if (mounted) {
+          // Después del registro, el usuario inicia sesión automáticamente.
+          // MainScreen leerá el rol desde AppConstants.currentUser.
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -148,94 +152,104 @@ class _AuthPageState extends State<AuthPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Cabecera que contiene el título y las pestañas.
-            Container(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        AppConstants.defaultBorderRadius,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                            AppConstants.defaultBorderRadius,
+                          ),
+                          child: Image.asset(
+                            'assets/images/login_createuser.png',
+                            height: 180,
+                          ),
+                        ),
                       ),
-                      child: Image.asset(
-                        'assets/images/login_createuser.png',
-                        height: 180,
+                      const SizedBox(height: 8),
+                      Text(
+                        'Bienvenidos',
+                        style: GoogleFonts.outfit(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Título de bienvenida.
-                  Text(
-                    'Bienvenidos',
-                    style: GoogleFonts.outfit(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Subtítulo.
-                  Text(
-                    'Sign in or create an account to continue',
-                    style: GoogleFonts.outfit(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Contenedor de las pestañas.
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(
-                        AppConstants.defaultBorderRadius,
+                      const SizedBox(height: 8),
+                      Text(
+                        'Inicie sesión o cree una cuenta para continuar',
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
                       ),
-                    ),
-                    child: TabBar(
-                      controller: _tabController,
-                      // Estilos para el indicador de la pestaña seleccionada.
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorColor: AppConstants.primaryColor,
-                      indicator: BoxDecoration(
-                        color: AppConstants.primaryColor,
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
+              ),
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                toolbarHeight: 0,
+                automaticallyImplyLeading: false,
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(64),
+                  child: Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(
                           AppConstants.defaultBorderRadius,
                         ),
                       ),
-                      // Estilos para el texto de las pestañas.
-                      dividerColor: Colors.transparent,
-                      labelColor: Colors.white,
-                      unselectedLabelColor: Colors.grey[600],
-                      labelStyle: GoogleFonts.outfit(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                      child: TabBar(
+                        controller: _tabController,
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicatorColor: AppConstants.primaryColor,
+                        indicator: BoxDecoration(
+                          color: AppConstants.primaryColor,
+                          borderRadius: BorderRadius.circular(
+                            AppConstants.defaultBorderRadius,
+                          ),
+                        ),
+                        dividerColor: Colors.transparent,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.grey[600],
+                        labelStyle: GoogleFonts.outfit(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        tabs: const [
+                          Tab(text: 'Iniciar sesión'),
+                          Tab(text: 'Registrarse'),
+                        ],
                       ),
-                      tabs: const [
-                        Tab(text: 'Sign In'),
-                        Tab(text: 'Sign Up'),
-                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-            // Contenido que cambia según la pestaña seleccionada.
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  //Sign In
-                  _buildSignInTab(),
-                  //Sign Up
-                  _buildSignUpTab(),
-                ],
-              ),
-            ),
-          ],
+            ];
+          },
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              //Sign In
+              _buildSignInTab(),
+              //Sign Up
+              _buildSignUpTab(),
+            ],
+          ),
         ),
       ),
     );
@@ -244,6 +258,7 @@ class _AuthPageState extends State<AuthPage>
   /// Construye el contenido de la pestaña "Sign In".
   Widget _buildSignInTab() {
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
@@ -253,32 +268,32 @@ class _AuthPageState extends State<AuthPage>
             child: Column(
               children: [
                 AuthTextField(
-                  label: 'Email',
-                  hint: 'Enter your email',
+                  label: 'Correo Electrónico',
+                  hint: 'Introduce tu correo electrónico',
                   controller: _signInEmailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'Por favor ingrese su correo electrónico';
                     }
                     if (!value.contains('@')) {
-                      return 'Please enter a valid email';
+                      return 'Por favor, introduzca un correo electrónico válido';
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 20),
                 AuthTextField(
-                  label: 'Password',
-                  hint: 'Enter your password',
+                  label: 'Contraseña',
+                  hint: 'Ingrese su contraseña',
                   controller: _signInPasswordController,
                   isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'Por favor, introduzca su contraseña';
                     }
                     if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
+                      return 'La contraseña debe tener al menos 6 caracteres';
                     }
                     return null;
                   },
@@ -296,7 +311,7 @@ class _AuthPageState extends State<AuthPage>
                       );
                     },
                     child: Text(
-                      'Forgot Password?',
+                      '¿Has olvidado tu contraseña?',
                       style: GoogleFonts.outfit(
                         color: Colors.grey[700],
                         fontWeight: FontWeight.w500,
@@ -307,15 +322,11 @@ class _AuthPageState extends State<AuthPage>
                 ),
                 const SizedBox(height: 24),
                 AuthButton(
-                  text: 'Sign In',
+                  text: 'Iniciar sesión',
                   onPressed: _onSignInPressed,
                   isLoading: _isLoading,
                 ),
                 const SizedBox(height: 16),
-                ReusabledOutlinedButton(
-                  text: 'Continue as Guest',
-                  onPressed: _continueAsGuest,
-                ),
               ],
             ),
           ),
@@ -325,7 +336,7 @@ class _AuthPageState extends State<AuthPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Don\'t have an account?',
+                '¿No tienes una cuenta?',
                 style: GoogleFonts.outfit(
                   color: Colors.grey[600],
                   fontWeight: FontWeight.w600,
@@ -337,7 +348,7 @@ class _AuthPageState extends State<AuthPage>
                   _tabController.animateTo(1); //Switch to sign up tab
                 },
                 child: Text(
-                  'Sign Up',
+                  'Registrarse',
                   style: GoogleFonts.outfit(
                     color: AppConstants.primaryColor,
                     fontWeight: FontWeight.w600,
@@ -356,6 +367,7 @@ class _AuthPageState extends State<AuthPage>
   /// Construye el contenido de la pestaña "Sign Up".
   Widget _buildSignUpTab() {
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
@@ -467,7 +479,7 @@ class _AuthPageState extends State<AuthPage>
                   _tabController.animateTo(0); //Switch to sign in tab
                 },
                 child: Text(
-                  'Sign In',
+                  'Iniciar sesión',
                   style: GoogleFonts.outfit(
                     color: AppConstants.primaryColor,
                     fontWeight: FontWeight.w600,

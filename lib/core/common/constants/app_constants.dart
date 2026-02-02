@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:deteccion_persona_f/features/auth/data/auth_logins.dart';
 
 /// Una clase que contiene constantes de diseño reutilizables en toda la aplicación.
 /// Esto ayuda a mantener una interfaz de usuario consistente y facilita los cambios de estilo globales.
@@ -7,7 +8,8 @@ class AppConstants {
   // --- API ---
   // Usa 'http://10.0.2.2:3000/api' para emulador Android
   // Usa 'http://localhost:3000/api' para iOS o Web
-  static const String apiBaseUrl = 'http://10.0.2.2:3000/api';
+  // static const String apiBaseUrl = 'http://10.0.2.2:3000/api';
+  static const String apiBaseUrl = 'http://192.168.100.3:3000/api'; // IP de tu adaptador Wi-Fi
 
   // --- COLORES ---
   /// Color principal usado para elementos importantes como botones y acentos.
@@ -60,4 +62,8 @@ class AppConstants {
   // --- ANIMACIONES ---
   /// Duración estándar para animaciones de UI.
   static const Duration defaultDuration = Duration(milliseconds: 300);
+
+  // --- SESIÓN (Simple In-Memory) ---
+  static String? authToken;
+  static DatosUsuarios? currentUser;
 }

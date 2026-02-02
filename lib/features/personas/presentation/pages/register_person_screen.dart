@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:deteccion_persona_f/core/common/constants/app_constants.dart';
 import 'package:deteccion_persona_f/features/auth/presentation/widgets/auth_widgets.dart';
+import 'package:deteccion_persona_f/features/personas/data/personas_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,9 +15,11 @@ class RegisterPersonScreen extends StatefulWidget {
 
 class _RegisterPersonScreenState extends State<RegisterPersonScreen> {
   final _formKey = GlobalKey<FormState>();
+  final PersonasService _personasService = PersonasService();
   
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
+  bool _isLoading = false;
 
   // Controladores
   final _nameController = TextEditingController();
@@ -154,13 +157,36 @@ class _RegisterPersonScreenState extends State<RegisterPersonScreen> {
               const SizedBox(height: 32),
               AuthButton(
                 text: 'Registrar Persona',
-                onPressed: () {
+                isLoading: _isLoading,
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // Aquí iría la lógica para enviar el CreatePersonaDto al backend
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Procesando registro...')),
-                    );
-                    Navigator.pop(context);
+                    setState(() => _isLoading = true);
+                    
+                    try {
+                      await _personasService.createPersona(
+                        name: _nameController.text.trim(),
+                        alias: _aliasController.text.trim(),
+                        notes: _notesController.text.trim(),
+                        requestedBy: _requestedByController.text.trim(),
+                        phone: _phoneController.text.trim(),
+                        image: _selectedImage,
+                      );
+
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Persona registrada con éxito')),
+                        );
+                        Navigator.pop(context);
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: ${e.toString().replaceAll("Exception: ", "")}')),
+                        );
+                      }
+                    } finally {
+                      if (mounted) setState(() => _isLoading = false);
+                    }
                   }
                 },
               ),

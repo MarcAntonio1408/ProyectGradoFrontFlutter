@@ -9,6 +9,7 @@ class PersonDetailScreen extends StatelessWidget {
   final String requestedBy;
   final String phoneNumber;
   final bool isFound;
+  final String photo;
 
   const PersonDetailScreen({
     super.key,
@@ -18,6 +19,7 @@ class PersonDetailScreen extends StatelessWidget {
     required this.requestedBy,
     required this.phoneNumber,
     required this.isFound,
+    required this.photo,
   });
 
   @override
@@ -67,11 +69,19 @@ class PersonDetailScreen extends StatelessWidget {
                 ],
               ),
               child: ClipOval(
-                child: Icon(
-                  Icons.person,
-                  size: 80,
-                  color: Colors.grey[400],
-                ),
+                child: photo.isNotEmpty
+                    ? Image.network(
+                        photo.startsWith('http')
+                            ? photo
+                            : '${AppConstants.apiBaseUrl}/files/$photo',
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 80, color: Colors.grey[400]),
+                      )
+                    : Icon(
+                        Icons.person,
+                        size: 80,
+                        color: Colors.grey[400],
+                      ),
               ),
             ),
             const SizedBox(height: 24),
