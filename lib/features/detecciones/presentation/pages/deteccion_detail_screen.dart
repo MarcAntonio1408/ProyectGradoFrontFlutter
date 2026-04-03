@@ -42,6 +42,7 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
           createdAt: _captura.createdAt,
           updatedAt: DateTime.now(),
           nombrePersona: _captura.nombrePersona,
+          nombresPersonas: _captura.nombresPersonas,
         );
       });
 
@@ -133,15 +134,33 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
             const SizedBox(height: 24),
             
             // Nombre y Estado
-            Text(
-              _captura.nombrePersona,
-              style: GoogleFonts.outfit(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+            if (_captura.nombresPersonas.length > 1)
+              Column(
+                children: _captura.nombresPersonas
+                    .map((nombre) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            nombre,
+                            style: GoogleFonts.outfit(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ))
+                    .toList(),
+              )
+            else
+              Text(
+                _captura.nombrePersona,
+                style: GoogleFonts.outfit(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),

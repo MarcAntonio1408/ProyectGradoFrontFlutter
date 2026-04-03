@@ -9,6 +9,7 @@ class CapturaPersonaModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String nombrePersona;
+  final List<String> nombresPersonas;
 
   CapturaPersonaModel({
     required this.id,
@@ -21,17 +22,25 @@ class CapturaPersonaModel {
     required this.createdAt,
     required this.updatedAt,
     required this.nombrePersona,
+    required this.nombresPersonas,
   });
 
   factory CapturaPersonaModel.fromJson(Map<String, dynamic> json) {
-    String nombre = 'Desconocido';
+    List<String> nombres = [];
     if (json['nombrePersonaEncontrada'] != null &&
-        json['nombrePersonaEncontrada'] is List &&
-        (json['nombrePersonaEncontrada'] as List).isNotEmpty) {
-      nombre = (json['nombrePersonaEncontrada'] as List).first.toString();
-    } else if (json['persona'] != null && json['persona']['namePersona'] != null) {
-      nombre = json['persona']['namePersona'];
+        json['nombrePersonaEncontrada'] is List) {
+      nombres = (json['nombrePersonaEncontrada'] as List).map((e) => e.toString()).toList();
     }
+
+    if (nombres.isEmpty && json['persona'] != null && json['persona']['namePersona'] != null) {
+      nombres.add(json['persona']['namePersona'].toString());
+    }
+
+    if (nombres.isEmpty) {
+      nombres.add('Desconocido');
+    }
+
+    String nombre = nombres.join(', ');
 
     String ropa = 'Sin datos';
     int ropaCount = 0;
@@ -70,6 +79,7 @@ class CapturaPersonaModel {
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
       nombrePersona: nombre,
+      nombresPersonas: nombres,
     );
   }
 }

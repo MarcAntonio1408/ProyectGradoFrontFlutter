@@ -296,6 +296,8 @@ class _CapturaCard extends StatelessWidget {
               children: [
                 Text(
                   captura.nombrePersona,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.outfit(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,

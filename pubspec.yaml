@@ -40,6 +40,7 @@ dependencies:
   http: ^1.6.0
   fl_chart: ^1.1.1
   image_picker: ^1.0.7
+  toastification: ^3.0.3
 
 dev_dependencies:
   flutter_test:

@@ -10,7 +10,11 @@ class AppConstants {
   // Usa 'http://localhost:3000/api' para iOS o Web
   // static const String apiBaseUrl = 'http://10.0.2.2:3000/api';
   static const String apiBaseUrl = 'http://192.168.100.3:3000/api'; // IP de tu adaptador Wi-Fi
-
+  // static const String apiBaseUrl = 'http://10.96.101.35:3000/api'; // IP de tu adaptador Wi-Fi (celular)
+  
+  // static const String apiBaseUrl = 'http://192.168.1.9:3000/api'; // IP de tu adaptador Wi-Fi
+  // static const String apiBaseUrl = 'http://10.14.214.35:3000/api'; // IP de tu adaptador Wi-Fi
+  
   // --- COLORES ---
   /// Color principal usado para elementos importantes como botones y acentos.
   static Color primaryColor = Color(0xFF085B63);
