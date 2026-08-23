@@ -1,28 +1,40 @@
 import 'package:deteccion_persona_f/features/auth/data/auth_service.dart';
 import 'package:deteccion_persona_f/features/detecciones/presentation/pages/detection_monitor.dart';
+import 'package:deteccion_persona_f/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
-import 'package:deteccion_persona_f/splash_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await AuthService().checkBackendConnection();
-  runApp(const DeteccionPersona());
+
+  try {
+    await AuthService().checkBackendConnection();
+  } catch (e) {
+    debugPrint('No fue posible conectar con el backend: $e');
+  }
+
+  runApp(const GuardiIAApp());
 }
 
-class DeteccionPersona extends StatelessWidget {
-  const DeteccionPersona({super.key});
+class GuardiIAApp extends StatelessWidget {
+  const GuardiIAApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ToastificationWrapper(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Detector de Personas',
+        title: 'GuardiIA',
+
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+          colorSchemeSeed: const Color(0xFF15656B),
+          scaffoldBackgroundColor: const Color(0xFFF6F7F8),
+          fontFamily: 'Outfit',
         ),
-        home: SplashScreen(),
+
+        home: const SplashScreen(),
+
         builder: (context, child) {
           return DetectionMonitor(child: child ?? const SizedBox.shrink());
         },

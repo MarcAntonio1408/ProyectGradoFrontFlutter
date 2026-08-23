@@ -29,10 +29,14 @@ class CapturaPersonaModel {
     List<String> nombres = [];
     if (json['nombrePersonaEncontrada'] != null &&
         json['nombrePersonaEncontrada'] is List) {
-      nombres = (json['nombrePersonaEncontrada'] as List).map((e) => e.toString()).toList();
+      nombres = (json['nombrePersonaEncontrada'] as List)
+          .map((e) => e.toString())
+          .toList();
     }
 
-    if (nombres.isEmpty && json['persona'] != null && json['persona']['namePersona'] != null) {
+    if (nombres.isEmpty &&
+        json['persona'] != null &&
+        json['persona']['namePersona'] != null) {
       nombres.add(json['persona']['namePersona'].toString());
     }
 
@@ -49,7 +53,8 @@ class CapturaPersonaModel {
         (json['clothesDetections'] as List).isNotEmpty) {
       final List<String> items = [];
       for (var detection in (json['clothesDetections'] as List)) {
-        ropaCount += int.tryParse(detection['clothingCount']?.toString() ?? '0') ?? 0;
+        ropaCount +=
+            int.tryParse(detection['clothingCount']?.toString() ?? '0') ?? 0;
         final dynamic result = detection['resultJson'];
         if (result is List) {
           items.addAll(result.map((e) => e.toString()));
@@ -70,14 +75,24 @@ class CapturaPersonaModel {
 
     return CapturaPersonaModel(
       id: json['id']?.toString() ?? '',
-      foto: json['filename']?.toString() ?? json['foto']?.toString() ?? '',
+      foto:
+          json['filePath']?.toString() ??
+          json['fileUrl']?.toString() ??
+          json['filename']?.toString() ??
+          json['foto']?.toString() ??
+          '',
       faceCount: int.tryParse(json['faceCount']?.toString() ?? '0') ?? 0,
       resultJson: ropa,
       clothingCount: ropaCount,
       encontrado: json['encontrado'] ?? false,
-      fecha: DateTime.tryParse(json['fecha']?.toString() ?? '') ?? DateTime.now(),
-      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
-      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
+      fecha:
+          DateTime.tryParse(json['fecha']?.toString() ?? '') ?? DateTime.now(),
+      createdAt:
+          DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
+          DateTime.now(),
+      updatedAt:
+          DateTime.tryParse(json['updatedAt']?.toString() ?? '') ??
+          DateTime.now(),
       nombrePersona: nombre,
       nombresPersonas: nombres,
     );

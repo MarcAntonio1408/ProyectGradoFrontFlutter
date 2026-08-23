@@ -4,6 +4,7 @@ import 'package:deteccion_persona_f/features/personas/data/personas_service.dart
 import 'package:deteccion_persona_f/features/personas/presentation/pages/person_detail_screen.dart';
 import 'package:deteccion_persona_f/features/personas/presentation/pages/register_person_screen.dart';
 import 'package:deteccion_persona_f/features/personas/presentation/widgets/boton_filtro.dart';
+import 'package:deteccion_persona_f/core/common/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -50,7 +51,13 @@ class _PersonasPagesState extends State<PersonasPages> {
 
     // 2. Filtro por texto de búsqueda (Nombre)
     if (_searchQuery.isNotEmpty) {
-      filteredList = filteredList.where((p) => p.namePersona.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+      filteredList = filteredList
+          .where(
+            (p) => p.namePersona.toLowerCase().contains(
+              _searchQuery.toLowerCase(),
+            ),
+          )
+          .toList();
     }
 
     return filteredList;
@@ -96,10 +103,15 @@ class _PersonasPagesState extends State<PersonasPages> {
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                        borderRadius: BorderRadius.circular(
+                          AppConstants.defaultBorderRadius,
+                        ),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -120,13 +132,15 @@ class _PersonasPagesState extends State<PersonasPages> {
                       BotonFiltro(
                         text: 'Desaparecidos',
                         isSelected: _selectedFilter == 'Desaparecidos',
-                        onTap: () => setState(() => _selectedFilter = 'Desaparecidos'),
+                        onTap: () =>
+                            setState(() => _selectedFilter = 'Desaparecidos'),
                       ),
                       const SizedBox(width: 8),
                       BotonFiltro(
                         text: 'Encontrados',
                         isSelected: _selectedFilter == 'Encontrados',
-                        onTap: () => setState(() => _selectedFilter = 'Encontrados'),
+                        onTap: () =>
+                            setState(() => _selectedFilter = 'Encontrados'),
                       ),
                     ],
                   ),
@@ -144,15 +158,21 @@ class _PersonasPagesState extends State<PersonasPages> {
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     final user = AppConstants.currentUser;
                     final isAdmin = user?.roles.contains('admin') ?? false;
-                    return Center(child: Text(isAdmin 
-                        ? 'No hay personas registradas' 
-                        : 'No tienes ninguna persona registrada'));
+                    return Center(
+                      child: Text(
+                        isAdmin
+                            ? 'No hay personas registradas'
+                            : 'No tienes ninguna persona registrada',
+                      ),
+                    );
                   }
 
                   final filteredList = _filterList(snapshot.data!);
 
                   return ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: AppConstants.defaultPadding),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppConstants.defaultPadding,
+                    ),
                     itemCount: filteredList.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 16),
                     itemBuilder: (context, index) {
@@ -164,18 +184,26 @@ class _PersonasPagesState extends State<PersonasPages> {
             ),
             const SizedBox(height: 16),
           ],
-        )
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const RegisterPersonScreen()),
+            MaterialPageRoute(
+              builder: (context) => const RegisterPersonScreen(),
+            ),
           ).then((_) => _loadPersonas()); // Recargar lista al volver
         },
         backgroundColor: AppConstants.primaryColor,
         icon: const Icon(Icons.person_add, color: Colors.white),
-        label: Text('Registrar Personas', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w600)),
+        label: Text(
+          'Registrar Personas',
+          style: GoogleFonts.outfit(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }
@@ -208,22 +236,31 @@ class _PersonCard extends StatelessWidget {
             height: 60,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppConstants.primaryColor,
-                width: 2,
-              ),
+              border: Border.all(color: AppConstants.primaryColor, width: 2),
             ),
             child: ClipOval(
               child: Container(
                 color: Colors.grey[200],
                 child: persona.foto.isNotEmpty
                     ? Image.network(
-                        // Ajusta la URL base si la foto es solo el nombre del archivo
-                        persona.foto.startsWith('http') 
-                            ? persona.foto 
-                            : '${AppConstants.apiBaseUrl}/files/${persona.foto}',
+                        ImageUtils.getImageUrl(persona.foto),
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Icon(Icons.person, color: Colors.grey),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+
+                          return const Center(
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          );
+                        },
+                        errorBuilder: (_, __, ___) {
+                          return const Icon(Icons.person, color: Colors.grey);
+                        },
                       )
                     : const Icon(Icons.person, color: Colors.grey),
               ),
@@ -291,10 +328,7 @@ class _PersonCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.grey.shade300),
               ),
-              child: const Icon(
-                Icons.chevron_right,
-                color: Colors.black,
-              ),
+              child: const Icon(Icons.chevron_right, color: Colors.black),
             ),
           ),
         ],

@@ -39,7 +39,12 @@ class DatosPersonas {
       fechaEncontada: json['fechaEncontada'] != null
           ? DateTime.tryParse(json['fechaEncontada'])
           : null,
-      foto: json['foto'] ?? '',
+      foto:
+          json['filePath']?.toString() ??
+          json['fileUrl']?.toString() ??
+          json['filename']?.toString() ??
+          json['foto']?.toString() ??
+          '',
       user: json['user'] != null ? User.fromJson(json['user']) : null,
       createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
@@ -75,7 +80,8 @@ class User {
       correo: json['correo'] ?? '',
       nombreCompleto: json['nombreCompleto'] ?? '',
       isActive: json['isActive'] ?? false,
-      roles: (json['roles'] as List<dynamic>?)
+      roles:
+          (json['roles'] as List<dynamic>?)
               ?.map((role) => _parseRole(role.toString()))
               .toList() ??
           [],
@@ -89,7 +95,4 @@ class User {
   }
 }
 
-enum Role {
-  ADMIN,
-  USER
-}
+enum Role { ADMIN, USER }

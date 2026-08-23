@@ -1,6 +1,7 @@
 import 'package:deteccion_persona_f/core/common/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:deteccion_persona_f/core/common/utils/image_utils.dart';
 
 class PersonDetailScreen extends StatelessWidget {
   final String name;
@@ -71,21 +72,34 @@ class PersonDetailScreen extends StatelessWidget {
               child: ClipOval(
                 child: photo.isNotEmpty
                     ? Image.network(
-                        photo.startsWith('http')
-                            ? photo
-                            : '${AppConstants.apiBaseUrl}/files/$photo',
+                        ImageUtils.getImageUrl(photo),
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 80, color: Colors.grey[400]),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+
+                          return const Center(
+                            child: SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          );
+                        },
+                        errorBuilder: (_, __, ___) {
+                          return Icon(
+                            Icons.person,
+                            size: 80,
+                            color: Colors.grey[400],
+                          );
+                        },
                       )
-                    : Icon(
-                        Icons.person,
-                        size: 80,
-                        color: Colors.grey[400],
-                      ),
+                    : Icon(Icons.person, size: 80, color: Colors.grey[400]),
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Nombre y Estado
             Text(
               name,
@@ -134,7 +148,11 @@ class PersonDetailScreen extends StatelessWidget {
                   const Divider(height: 32),
                   _buildInfoRow(Icons.note_alt_outlined, 'Notas', notes),
                   const Divider(height: 32),
-                  _buildInfoRow(Icons.assignment_ind_outlined, 'Solicitado por', requestedBy),
+                  _buildInfoRow(
+                    Icons.assignment_ind_outlined,
+                    'Solicitado por',
+                    requestedBy,
+                  ),
                   const Divider(height: 32),
                   _buildInfoRow(Icons.phone_outlined, 'Teléfono', phoneNumber),
                 ],

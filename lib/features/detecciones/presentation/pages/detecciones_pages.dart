@@ -2,6 +2,7 @@ import 'package:deteccion_persona_f/core/common/constants/app_constants.dart';
 import 'package:deteccion_persona_f/features/detecciones/data/captura_persona_model.dart';
 import 'package:deteccion_persona_f/features/detecciones/data/captura_persona_service.dart';
 import 'package:deteccion_persona_f/features/detecciones/presentation/pages/deteccion_detail_screen.dart';
+import 'package:deteccion_persona_f/core/common/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -56,13 +57,18 @@ class _DeteccionesPagesState extends State<DeteccionesPages> {
 
     return list.where((item) {
       final date = item.fecha;
-      final isAfterStart = start == null || date.isAfter(start) || date.isAtSameMomentAs(start);
-      final isBeforeEnd = end == null || date.isBefore(end) || date.isAtSameMomentAs(end);
+      final isAfterStart =
+          start == null || date.isAfter(start) || date.isAtSameMomentAs(start);
+      final isBeforeEnd =
+          end == null || date.isBefore(end) || date.isAtSameMomentAs(end);
       return isAfterStart && isBeforeEnd;
     }).toList();
   }
 
-  Future<void> _selectDate(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectDate(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -71,9 +77,7 @@ class _DeteccionesPagesState extends State<DeteccionesPages> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppConstants.primaryColor,
-            ),
+            colorScheme: ColorScheme.light(primary: AppConstants.primaryColor),
           ),
           child: child!,
         );
@@ -170,14 +174,18 @@ class _DeteccionesPagesState extends State<DeteccionesPages> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No hay detecciones registradas'));
+                    return const Center(
+                      child: Text('No hay detecciones registradas'),
+                    );
                   }
 
                   final list = snapshot.data!;
                   final filteredList = _filterList(list);
 
                   if (filteredList.isEmpty) {
-                    return const Center(child: Text('No se encontraron resultados en este rango'));
+                    return const Center(
+                      child: Text('No se encontraron resultados en este rango'),
+                    );
                   }
 
                   return ListView.separated(
@@ -233,7 +241,11 @@ class _DeteccionesPagesState extends State<DeteccionesPages> {
                   horizontal: 16,
                   vertical: 14,
                 ),
-                suffixIcon: const Icon(Icons.calendar_today, size: 20, color: Colors.grey),
+                suffixIcon: const Icon(
+                  Icons.calendar_today,
+                  size: 20,
+                  color: Colors.grey,
+                ),
               ),
             ),
           ),
@@ -249,7 +261,9 @@ class _CapturaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusText = captura.encontrado ? 'Coincidencia confirmada' : 'Coincidencia en espera';
+    final statusText = captura.encontrado
+        ? 'Coincidencia confirmada'
+        : 'Coincidencia en espera';
     final statusColor = captura.encontrado ? Colors.green : Colors.orange;
 
     return Container(
@@ -279,11 +293,11 @@ class _CapturaCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               child: captura.foto.isNotEmpty
                   ? Image.network(
-                      captura.foto.startsWith('http')
-                          ? captura.foto
-                          : '${AppConstants.apiBaseUrl}/files/${captura.foto}',
+                      ImageUtils.getImageUrl(captura.foto),
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported),
+                      errorBuilder: (_, __, ___) {
+                        return const Icon(Icons.image_not_supported);
+                      },
                     )
                   : const Icon(Icons.image, color: Colors.grey),
             ),
@@ -320,8 +334,19 @@ class _CapturaCard extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Rostros', style: GoogleFonts.outfit(fontSize: 12, color: Colors.grey)),
-                        Text('${captura.faceCount}', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+                        Text(
+                          'Rostros',
+                          style: GoogleFonts.outfit(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          '${captura.faceCount}',
+                          style: GoogleFonts.outfit(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(width: 24),
@@ -330,12 +355,20 @@ class _CapturaCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Ropa', style: GoogleFonts.outfit(fontSize: 12, color: Colors.grey)),
+                          Text(
+                            'Ropa',
+                            style: GoogleFonts.outfit(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
                           Text(
                             captura.resultJson,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+                            style: GoogleFonts.outfit(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -343,9 +376,21 @@ class _CapturaCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text('Fecha: ${captura.fecha.toLocal().toString().split(' ')[0]}', style: GoogleFonts.outfit(fontSize: 12, color: Colors.grey[600])),
+                Text(
+                  'Fecha: ${captura.fecha.toLocal().toString().split(' ')[0]}',
+                  style: GoogleFonts.outfit(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
                 if (captura.encontrado)
-                  Text('Encontrado: ${captura.updatedAt.toLocal().toString().split(' ')[0]}', style: GoogleFonts.outfit(fontSize: 12, color: Colors.green[700])),
+                  Text(
+                    'Encontrado: ${captura.updatedAt.toLocal().toString().split(' ')[0]}',
+                    style: GoogleFonts.outfit(
+                      fontSize: 12,
+                      color: Colors.green[700],
+                    ),
+                  ),
               ],
             ),
           ),

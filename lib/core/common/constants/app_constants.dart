@@ -11,20 +11,36 @@ class AppConstants {
   // static const String apiBaseUrl = 'http://10.0.2.2:3000/api'; //Emulador Android
   // static const String apiBaseUrl = 'http://10.0.2.2:3000/api';
   // static const String apiBaseUrl = 'http://192.168.100.3:3000/api'; // IP de tu adaptador Wi-Fi
-   static const String apiBaseUrl = 'http://10.128.169.35:3000/api'; // IP de tu adaptador Wi-Fi (celular)
-  
+  //  static const String apiBaseUrl = 'http://10.128.169.35:3000/api'; // IP de tu adaptador Wi-Fi (celular)
+  // static const String apiBaseUrl = 'http://192.168.100.10:3000/api'; // IP de tu adaptador Wi-Fi
   // static const String apiBaseUrl = 'http://192.168.1.9:3000/api'; // IP de tu adaptador Wi-Fi
   // static const String apiBaseUrl = 'http://10.14.214.35:3000/api'; // IP de tu adaptador Wi-Fi
+  /// Configuración del servidor
+  static const String serverIp = '192.168.100.10';
+  static const int serverPort = 3000;
+  static const int websocketPort = 5001;
+  static const String apiPrefix = 'api';
   
+  /// REST API
+  static const String apiBaseUrl = 'http://$serverIp:$serverPort/$apiPrefix';
+  /// Backend sin /api
+  static const String backendBaseUrl = 'http://$serverIp:$serverPort';
+  /// WebSocket
+  static const String websocketUrl = 'ws://$serverIp:$websocketPort';
+
   // --- COLORES ---
   /// Color principal usado para elementos importantes como botones y acentos.
   static Color primaryColor = Color(0xFF085B63);
+
   /// Color secundario, una versión semitransparente del color primario.
   static Color secondaryColor = primaryColor.withOpacity(0.7);
+
   /// Color de fondo principal para la mayoría de las pantallas.
   static const Color backgroundColor = Colors.white;
+
   /// Color de texto por defecto.
   static const Color textColor = Color(0xFF1A1A1A);
+
   /// Un color gris claro, útil para fondos de campos de texto o divisores.
   static const Color greyColor = Color(0xFFF5F5F5);
 
@@ -44,26 +60,28 @@ class AppConstants {
   );
 
   /// Estilo para el cuerpo de texto general.
-  static TextStyle get bodyStyle => GoogleFonts.outfit(
-    fontSize: 16,
-    color: textColor,
-  );
+  static TextStyle get bodyStyle =>
+      GoogleFonts.outfit(fontSize: 16, color: textColor);
 
   // --- ESPACIADO Y BORDES ---
   /// Relleno (padding) estándar.
   static const double defaultPadding = 16.0;
+
   /// Relleno pequeño.
   static const double smallPadding = 8.0;
+
   /// Relleno grande.
   static const double largePadding = 24.0;
 
   /// Radio de borde por defecto para botones y contenedores.
   static const double defaultBorderRadius = 26.0;
+
   /// Radio de borde pequeño.
   static const double smallBorderRadius = 8.0;
+
   /// Radio de borde grande.
   static const double largeBorderRadius = 16.0;
-  
+
   // --- ANIMACIONES ---
   /// Duración estándar para animaciones de UI.
   static const Duration defaultDuration = Duration(milliseconds: 300);

@@ -1,6 +1,7 @@
 import 'package:deteccion_persona_f/core/common/constants/app_constants.dart';
 import 'package:deteccion_persona_f/features/detecciones/data/captura_persona_model.dart';
 import 'package:deteccion_persona_f/features/detecciones/data/captura_persona_service.dart';
+import 'package:deteccion_persona_f/core/common/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -58,7 +59,9 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString().replaceAll("Exception: ", "")}'),
+            content: Text(
+              'Error: ${e.toString().replaceAll("Exception: ", "")}',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -71,7 +74,9 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final statusColor = _captura.encontrado ? Colors.green : Colors.red;
-    final statusText = _captura.encontrado ? 'Coincidencia Confirmada' : 'Coincidencia en Espera';
+    final statusText = _captura.encontrado
+        ? 'Coincidencia Confirmada'
+        : 'Coincidencia en Espera';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F7F8),
@@ -102,10 +107,7 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: statusColor,
-                  width: 4,
-                ),
+                border: Border.all(color: statusColor, width: 4),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -118,11 +120,22 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
                 borderRadius: BorderRadius.circular(20),
                 child: _captura.foto.isNotEmpty
                     ? Image.network(
-                        _captura.foto.startsWith('http')
-                            ? _captura.foto
-                            : '${AppConstants.apiBaseUrl}/files/${_captura.foto}',
+                        ImageUtils.getImageUrl(_captura.foto),
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Icon(Icons.image_not_supported, size: 80, color: Colors.grey[400]),
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                        errorBuilder: (_, __, ___) {
+                          return Icon(
+                            Icons.image_not_supported,
+                            size: 80,
+                            color: Colors.grey[400],
+                          );
+                        },
                       )
                     : Icon(
                         Icons.image_not_supported,
@@ -132,23 +145,25 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Nombre y Estado
             if (_captura.nombresPersonas.length > 1)
               Column(
                 children: _captura.nombresPersonas
-                    .map((nombre) => Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            nombre,
-                            style: GoogleFonts.outfit(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                            textAlign: TextAlign.center,
+                    .map(
+                      (nombre) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: Text(
+                          nombre,
+                          style: GoogleFonts.outfit(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
-                        ))
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
                     .toList(),
               )
             else
@@ -195,13 +210,29 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
               ),
               child: Column(
                 children: [
-                  _buildInfoRow(Icons.tag_faces, 'Cantidad de Rostros', _captura.faceCount.toString()),
+                  _buildInfoRow(
+                    Icons.tag_faces,
+                    'Cantidad de Rostros',
+                    _captura.faceCount.toString(),
+                  ),
                   const Divider(height: 32),
-                  _buildInfoRow(Icons.checkroom, 'Ropa Detectada', _captura.resultJson),
+                  _buildInfoRow(
+                    Icons.checkroom,
+                    'Ropa Detectada',
+                    _captura.resultJson,
+                  ),
                   const Divider(height: 32),
-                  _buildInfoRow(Icons.numbers, 'Cantidad de Ropa', _captura.clothingCount.toString()),
+                  _buildInfoRow(
+                    Icons.numbers,
+                    'Cantidad de Ropa',
+                    _captura.clothingCount.toString(),
+                  ),
                   const Divider(height: 32),
-                  _buildInfoRow(Icons.calendar_today, 'Fecha de Detección', _captura.fecha.toLocal().toString().split(' ')[0]),
+                  _buildInfoRow(
+                    Icons.calendar_today,
+                    'Fecha de Detección',
+                    _captura.fecha.toLocal().toString().split(' ')[0],
+                  ),
                 ],
               ),
             ),
@@ -217,7 +248,9 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppConstants.defaultBorderRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.defaultBorderRadius,
+                      ),
                     ),
                   ),
                   child: _isLoading
@@ -226,7 +259,9 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
                         )
                       : Text(
@@ -262,9 +297,23 @@ class _DeteccionDetailScreenState extends State<DeteccionDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: GoogleFonts.outfit(color: Colors.grey[600], fontSize: 14, fontWeight: FontWeight.w500)),
+              Text(
+                label,
+                style: GoogleFonts.outfit(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               const SizedBox(height: 4),
-              Text(value, style: GoogleFonts.outfit(color: Colors.black87, fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(
+                value,
+                style: GoogleFonts.outfit(
+                  color: Colors.black87,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
         ),
